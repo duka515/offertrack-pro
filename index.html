@@ -1,1 +1,641 @@
-PLACEHOLDER_CONTENT
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OfferTrack Pro – Affiliate Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f1419;
+  --surface: #1a1f26;
+  --surface2: #242b35;
+  --border: #2d3642;
+  --text: #e7ecf1;
+  --text-dim: #8b98a5;
+  --accent: #1d9bf0;
+  --accent-hover: #1a8cd8;
+  --success: #00ba7c;
+  --warning: #ffd400;
+  --danger: #f4212e;
+  --radius: 12px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+a { color: var(--accent); text-decoration: none; }
+button, input, select {
+  font-family: inherit;
+  font-size: 14px;
+}
+.app { display: flex; min-height: 100vh; }
+.sidebar {
+  width: 240px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 20px 0;
+  flex-shrink: 0;
+}
+.logo {
+  padding: 0 20px 24px;
+  font-size: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.logo-icon {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, #1d9bf0, #00ba7c);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; color: white;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 20px;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.15s;
+  border-left: 3px solid transparent;
+}
+.nav-item:hover { background: var(--surface2); color: var(--text); }
+.nav-item.active {
+  background: var(--surface2);
+  color: var(--text);
+  border-left-color: var(--accent);
+}
+.main { flex: 1; display: flex; flex-direction: column; }
+.topbar {
+  height: 64px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px;
+  background: var(--surface);
+}
+.content { padding: 24px; flex: 1; overflow: auto; }
+.page { display: none; }
+.page.active { display: block; }
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+.stat-card { text-align: center; }
+.stat-value { font-size: 28px; font-weight: 700; margin: 8px 0; }
+.stat-label { color: var(--text-dim); font-size: 13px; }
+.btn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.15s;
+}
+.btn:hover { background: var(--accent-hover); }
+.btn-secondary {
+  background: var(--surface2);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover { background: #2f3845; }
+.btn-success { background: var(--success); }
+.btn-sm { padding: 6px 12px; font-size: 13px; }
+input, select {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 10px 12px;
+  border-radius: 8px;
+  width: 100%;
+  outline: none;
+}
+input:focus, select:focus { border-color: var(--accent); }
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; margin-bottom: 6px; font-size: 13px; color: var(--text-dim); }
+.offer-card {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  background: var(--surface);
+}
+.offer-info h3 { margin-bottom: 4px; }
+.offer-meta { color: var(--text-dim); font-size: 13px; }
+.badge {
+  background: #1d9bf022;
+  color: var(--accent);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.badge-green { background: #00ba7c22; color: var(--success); }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); }
+th { color: var(--text-dim); font-weight: 500; font-size: 13px; }
+.auth-container {
+  max-width: 420px;
+  margin: 60px auto;
+}
+.auth-tabs { display: flex; margin-bottom: 20px; }
+.auth-tab {
+  flex: 1; text-align: center; padding: 10px;
+  cursor: pointer; border-bottom: 2px solid transparent;
+  color: var(--text-dim);
+}
+.auth-tab.active { border-bottom-color: var(--accent); color: var(--text); }
+.link-box {
+  background: var(--surface2);
+  padding: 12px;
+  border-radius: 8px;
+  font-family: monospace;
+  word-break: break-all;
+  margin: 10px 0;
+  display: flex; justify-content: space-between; align-items: center; gap: 10px;
+}
+.country-bar { height: 8px; background: var(--surface2); border-radius: 4px; margin-top: 4px; overflow: hidden; }
+.country-bar-fill { height: 100%; background: var(--accent); }
+.toast {
+  position: fixed; bottom: 20px; right: 20px;
+  background: var(--success); color: white;
+  padding: 12px 20px; border-radius: 8px;
+  display: none; z-index: 1000;
+}
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .app { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- Auth View -->
+  <div id="authView" class="page active">
+    <div class="auth-container">
+      <div class="logo" style="justify-content:center; margin-bottom: 30px;">
+        <div class="logo-icon">OT</div>
+        OfferTrack Pro
+      </div>
+      <div class="card">
+        <div class="auth-tabs">
+          <div class="auth-tab active" onclick="switchAuth('login')">Login</div>
+          <div class="auth-tab" onclick="switchAuth('signup')">Sign Up</div>
+        </div>
+        <div id="loginForm">
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="loginEmail" placeholder="you@example.com">
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="loginPass" placeholder="••••••••">
+          </div>
+          <button class="btn" style="width:100%" onclick="login()">Login</button>
+        </div>
+        <div id="signupForm" style="display:none;">
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" id="signupName" placeholder="Your name">
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="signupEmail" placeholder="you@example.com">
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="signupPass" placeholder="••••••••">
+          </div>
+          <button class="btn" style="width:100%" onclick="signup()">Create Account</button>
+        </div>
+        <p style="text-align:center; margin-top:16px; color:var(--text-dim); font-size:13px;">
+          Demo mode – data stored in your browser
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main App -->
+  <div id="mainApp" class="page">
+    <div class="app">
+      <div class="sidebar">
+        <div class="logo">
+          <div class="logo-icon">OT</div>
+          OfferTrack
+        </div>
+        <div class="nav-item active" onclick="showPage('dashboard')">📊 Dashboard</div>
+        <div class="nav-item" onclick="showPage('offers')">🎯 Offers</div>
+        <div class="nav-item" onclick="showPage('links')">🔗 My Links</div>
+        <div class="nav-item" onclick="showPage('stats')">📈 Statistics</div>
+        <div class="nav-item" onclick="logout()" style="margin-top:40px; color:var(--danger);">🚪 Logout</div>
+      </div>
+      <div class="main">
+        <div class="topbar">
+          <div id="welcomeText">Welcome</div>
+          <div id="userBalance" style="font-weight:600; color:var(--success);">Balance: $0.00</div>
+        </div>
+        <div class="content">
+          <!-- Dashboard -->
+          <div id="dashboardPage" class="page active">
+            <h2 style="margin-bottom:16px;">Overview</h2>
+            <div class="grid-3">
+              <div class="card stat-card">
+                <div class="stat-label">Total Clicks</div>
+                <div class="stat-value" id="dashClicks">0</div>
+              </div>
+              <div class="card stat-card">
+                <div class="stat-label">Conversions</div>
+                <div class="stat-value" id="dashConvs">0</div>
+              </div>
+              <div class="card stat-card">
+                <div class="stat-label">Revenue</div>
+                <div class="stat-value" id="dashRevenue">$0.00</div>
+              </div>
+            </div>
+            <div class="card">
+              <h3 style="margin-bottom:12px;">Recent Activity</h3>
+              <div id="recentActivity">No activity yet. Generate a link and test it.</div>
+            </div>
+          </div>
+
+          <!-- Offers -->
+          <div id="offersPage" class="page">
+            <h2 style="margin-bottom:16px;">Available Offers</h2>
+            <div id="offersList"></div>
+          </div>
+
+          <!-- Links -->
+          <div id="linksPage" class="page">
+            <h2 style="margin-bottom:16px;">My Tracking Links</h2>
+            <div id="linksList"></div>
+          </div>
+
+          <!-- Stats -->
+          <div id="statsPage" class="page">
+            <h2 style="margin-bottom:16px;">Statistics</h2>
+            <div class="card">
+              <div style="display:flex; gap:12px; margin-bottom:16px; flex-wrap:wrap;">
+                <select id="statsPeriod" onchange="renderStats()">
+                  <option value="7">Last 7 days</option>
+                  <option value="30">Last 30 days</option>
+                  <option value="90">Last 90 days</option>
+                  <option value="365">This year</option>
+                </select>
+                <select id="statsOffer" onchange="renderStats()">
+                  <option value="all">All Offers</option>
+                </select>
+              </div>
+              <div class="grid-3" style="margin-bottom:20px;">
+                <div class="card stat-card" style="margin:0;">
+                  <div class="stat-label">Clicks</div>
+                  <div class="stat-value" id="statClicks">0</div>
+                </div>
+                <div class="card stat-card" style="margin:0;">
+                  <div class="stat-label">Revenue</div>
+                  <div class="stat-value" id="statRevenue">$0</div>
+                </div>
+                <div class="card stat-card" style="margin:0;">
+                  <div class="stat-label">EPC</div>
+                  <div class="stat-value" id="statEpc">$0.00</div>
+                </div>
+              </div>
+              <h3 style="margin:16px 0 8px;">By Country</h3>
+              <div id="countryStats"></div>
+              <h3 style="margin:20px 0 8px;">Daily Breakdown</h3>
+              <table>
+                <thead>
+                  <tr><th>Date</th><th>Clicks</th><th>Revenue</th></tr>
+                </thead>
+                <tbody id="dailyTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">Copied!</div>
+
+<script>
+// ============ DATA ============
+const OFFERS = [
+  { id: 1, name: "Dating App Premium", vertical: "Dating", payout: 12.50, geo: "US, UK, CA, AU", type: "CPA" },
+  { id: 2, name: "Weight Loss Supplement", vertical: "Nutra", payout: 45.00, geo: "US, DE, FR", type: "CPL" },
+  { id: 3, name: "Crypto Trading Platform", vertical: "Finance", payout: 80.00, geo: "Worldwide", type: "CPS" },
+  { id: 4, name: "Sweepstakes Entry", vertical: "Sweepstakes", payout: 2.20, geo: "US", type: "CPL" },
+  { id: 5, name: "Mobile Game Install", vertical: "Apps", payout: 1.80, geo: "Global", type: "CPI" },
+  { id: 6, name: "Credit Card Application", vertical: "Finance", payout: 65.00, geo: "US, CA", type: "CPA" },
+];
+
+let currentUser = null;
+let users = JSON.parse(localStorage.getItem('ot_users') || '[]');
+let clicks = JSON.parse(localStorage.getItem('ot_clicks') || '[]');
+let links = JSON.parse(localStorage.getItem('ot_links') || '[]');
+
+function save() {
+  localStorage.setItem('ot_users', JSON.stringify(users));
+  localStorage.setItem('ot_clicks', JSON.stringify(clicks));
+  localStorage.setItem('ot_links', JSON.stringify(links));
+}
+
+// ============ AUTH ============
+function switchAuth(tab) {
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('signupForm').style.display = tab === 'signup' ? 'block' : 'none';
+}
+
+function signup() {
+  const name = document.getElementById('signupName').value.trim();
+  const email = document.getElementById('signupEmail').value.trim();
+  const pass = document.getElementById('signupPass').value;
+  if (!name || !email || !pass) return alert('Fill all fields');
+  if (users.find(u => u.email === email)) return alert('Email already registered');
+  const user = { id: Date.now(), name, email, pass, balance: 0, created: new Date().toISOString() };
+  users.push(user);
+  save();
+  currentUser = user;
+  enterApp();
+}
+
+function login() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  const user = users.find(u => u.email === email && u.pass === pass);
+  if (!user) return alert('Invalid credentials');
+  currentUser = user;
+  enterApp();
+}
+
+function logout() {
+  currentUser = null;
+  document.getElementById('authView').classList.add('active');
+  document.getElementById('mainApp').classList.remove('active');
+}
+
+function enterApp() {
+  document.getElementById('authView').classList.remove('active');
+  document.getElementById('mainApp').classList.add('active');
+  document.getElementById('welcomeText').textContent = `Welcome, ${currentUser.name}`;
+  updateBalance();
+  renderOffers();
+  renderLinks();
+  updateDashboard();
+  renderStats();
+  showPage('dashboard');
+}
+
+function updateBalance() {
+  const userLinks = links.filter(l => l.userId === currentUser.id);
+  const userClicks = clicks.filter(c => userLinks.some(l => l.id === c.linkId));
+  const revenue = userClicks.reduce((sum, c) => sum + (c.revenue || 0), 0);
+  currentUser.balance = revenue;
+  document.getElementById('userBalance').textContent = `Balance: $${revenue.toFixed(2)}`;
+}
+
+// ============ NAV ============
+function showPage(page) {
+  document.querySelectorAll('.content .page').forEach(p => p.classList.remove('active'));
+  document.getElementById(page + 'Page').classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  event.target.classList.add('active');
+  if (page === 'stats') renderStats();
+  if (page === 'dashboard') updateDashboard();
+}
+
+// ============ OFFERS ============
+function renderOffers() {
+  const container = document.getElementById('offersList');
+  container.innerHTML = OFFERS.map(o => `
+    <div class="offer-card">
+      <div class="offer-info">
+        <h3>${o.name}</h3>
+        <div class="offer-meta">
+          <span class="badge">${o.vertical}</span>
+          <span class="badge badge-green" style="margin-left:8px;">$${o.payout}</span>
+          <span style="margin-left:12px;">${o.type} • ${o.geo}</span>
+        </div>
+      </div>
+      <button class="btn btn-sm" onclick="requestLink(${o.id})">Request Link</button>
+    </div>
+  `).join('');
+}
+
+function requestLink(offerId) {
+  const offer = OFFERS.find(o => o.id === offerId);
+  const linkId = 'lnk_' + Math.random().toString(36).substr(2, 9);
+  const trackingUrl = `${window.location.origin}${window.location.pathname}?track=${linkId}`;
+  const newLink = {
+    id: linkId,
+    userId: currentUser.id,
+    offerId,
+    offerName: offer.name,
+    payout: offer.payout,
+    url: trackingUrl,
+    created: new Date().toISOString(),
+    clicks: 0
+  };
+  links.push(newLink);
+  save();
+  renderLinks();
+  alert('Link generated! Check My Links tab.');
+  showPage('links');
+}
+
+// ============ LINKS ============
+function renderLinks() {
+  const userLinks = links.filter(l => l.userId === currentUser.id);
+  const container = document.getElementById('linksList');
+  if (userLinks.length === 0) {
+    container.innerHTML = '<div class="card">No links yet. Go to Offers and request one.</div>';
+    return;
+  }
+  container.innerHTML = userLinks.map(l => `
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:start;">
+        <div>
+          <strong>${l.offerName}</strong>
+          <div style="color:var(--text-dim); font-size:13px; margin:4px 0;">
+            Payout: $${l.payout} • Created: ${new Date(l.created).toLocaleDateString()}
+          </div>
+        </div>
+        <span class="badge">${clicks.filter(c => c.linkId === l.id).length} clicks</span>
+      </div>
+      <div class="link-box">
+        <span>${l.url}</span>
+        <button class="btn btn-sm" onclick="copyLink('${l.url}')">Copy</button>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="simulateClick('${l.id}')">Simulate Click</button>
+    </div>
+  `).join('');
+}
+
+function copyLink(url) {
+  navigator.clipboard.writeText(url).then(() => {
+    const t = document.getElementById('toast');
+    t.style.display = 'block';
+    setTimeout(() => t.style.display = 'none', 2000);
+  });
+}
+
+function simulateClick(linkId) {
+  const countries = ['US', 'UK', 'DE', 'FR', 'CA', 'AU', 'BR', 'IN', 'ES', 'IT'];
+  const country = countries[Math.floor(Math.random() * countries.length)];
+  const link = links.find(l => l.id === linkId);
+  const isConv = Math.random() < 0.15; // 15% conversion rate for demo
+  const revenue = isConv ? link.payout : 0;
+  clicks.push({
+    id: 'clk_' + Date.now(),
+    linkId,
+    userId: currentUser.id,
+    offerId: link.offerId,
+    country,
+    timestamp: new Date().toISOString(),
+    revenue,
+    converted: isConv
+  });
+  save();
+  renderLinks();
+  updateBalance();
+  updateDashboard();
+  alert(isConv ? `Click + Conversion! +$${link.payout}` : 'Click registered (no conversion)');
+}
+
+// ============ STATS ============
+function renderStats() {
+  if (!currentUser) return;
+  const period = parseInt(document.getElementById('statsPeriod').value);
+  const offerFilter = document.getElementById('statsOffer').value;
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - period);
+
+  const userLinks = links.filter(l => l.userId === currentUser.id);
+  let userClicks = clicks.filter(c => userLinks.some(l => l.id === c.linkId) && new Date(c.timestamp) >= cutoff);
+  if (offerFilter !== 'all') {
+    userClicks = userClicks.filter(c => c.offerId == offerFilter);
+  }
+
+  const totalClicks = userClicks.length;
+  const totalRevenue = userClicks.reduce((s, c) => s + c.revenue, 0);
+  const epc = totalClicks ? (totalRevenue / totalClicks).toFixed(2) : '0.00';
+
+  document.getElementById('statClicks').textContent = totalClicks;
+  document.getElementById('statRevenue').textContent = '$' + totalRevenue.toFixed(2);
+  document.getElementById('statEpc').textContent = '$' + epc;
+
+  // Country
+  const countryMap = {};
+  userClicks.forEach(c => {
+    countryMap[c.country] = (countryMap[c.country] || 0) + 1;
+  });
+  const max = Math.max(...Object.values(countryMap), 1);
+  document.getElementById('countryStats').innerHTML = Object.entries(countryMap)
+    .sort((a,b) => b[1]-a[1])
+    .map(([c, n]) => `
+      <div style="margin-bottom:8px;">
+        <div style="display:flex; justify-content:space-between; font-size:13px;">
+          <span>${c}</span><span>${n}</span>
+        </div>
+        <div class="country-bar"><div class="country-bar-fill" style="width:${(n/max)*100}%"></div></div>
+      </div>
+    `).join('') || '<div style="color:var(--text-dim)">No data</div>';
+
+  // Daily
+  const dailyMap = {};
+  userClicks.forEach(c => {
+    const day = c.timestamp.split('T')[0];
+    if (!dailyMap[day]) dailyMap[day] = { clicks: 0, revenue: 0 };
+    dailyMap[day].clicks++;
+    dailyMap[day].revenue += c.revenue;
+  });
+  document.getElementById('dailyTable').innerHTML = Object.entries(dailyMap)
+    .sort((a,b) => b[0].localeCompare(a[0]))
+    .slice(0, 14)
+    .map(([d, v]) => `<tr><td>${d}</td><td>${v.clicks}</td><td>$${v.revenue.toFixed(2)}</td></tr>`)
+    .join('') || '<tr><td colspan="3" style="text-align:center; color:var(--text-dim)">No data for this period</td></tr>';
+
+  // Populate offer filter
+  const sel = document.getElementById('statsOffer');
+  const current = sel.value;
+  sel.innerHTML = '<option value="all">All Offers</option>' +
+    userLinks.map(l => `<option value="${l.offerId}">${l.offerName}</option>`).join('');
+  sel.value = current;
+}
+
+function updateDashboard() {
+  if (!currentUser) return;
+  const userLinks = links.filter(l => l.userId === currentUser.id);
+  const userClicks = clicks.filter(c => userLinks.some(l => l.id === c.linkId));
+  const revenue = userClicks.reduce((s, c) => s + c.revenue, 0);
+  const convs = userClicks.filter(c => c.converted).length;
+  document.getElementById('dashClicks').textContent = userClicks.length;
+  document.getElementById('dashConvs').textContent = convs;
+  document.getElementById('dashRevenue').textContent = '$' + revenue.toFixed(2);
+
+  const recent = userClicks.slice(-5).reverse();
+  document.getElementById('recentActivity').innerHTML = recent.length ?
+    recent.map(c => {
+      const link = links.find(l => l.id === c.linkId);
+      return `<div style="padding:8px 0; border-bottom:1px solid var(--border); font-size:13px;">
+        ${new Date(c.timestamp).toLocaleString()} • ${c.country} • ${link?.offerName || 'Offer'} 
+        ${c.converted ? `<span style="color:var(--success)"> +$${c.revenue}</span>` : ''}
+      </div>`;
+    }).join('') : 'No activity yet.';
+}
+
+// Handle tracking param on load (for demo click tracking)
+const urlParams = new URLSearchParams(window.location.search);
+const trackId = urlParams.get('track');
+if (trackId && !sessionStorage.getItem('tracked_' + trackId)) {
+  const link = links.find(l => l.id === trackId);
+  if (link) {
+    const countries = ['US', 'UK', 'DE', 'FR', 'CA'];
+    const isConv = Math.random() < 0.12;
+    clicks.push({
+      id: 'clk_' + Date.now(),
+      linkId: trackId,
+      userId: link.userId,
+      offerId: link.offerId,
+      country: countries[Math.floor(Math.random()*countries.length)],
+      timestamp: new Date().toISOString(),
+      revenue: isConv ? link.payout : 0,
+      converted: isConv
+    });
+    save();
+    sessionStorage.setItem('tracked_' + trackId, '1');
+    // Show a simple thank you if opened directly
+    if (document.getElementById('authView').classList.contains('active')) {
+      document.body.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#0f1419;color:white;font-family:Inter,sans-serif;">
+        <div style="text-align:center;">
+          <h1 style="font-size:48px;margin-bottom:16px;">✓</h1>
+          <h2>Click Tracked</h2>
+          <p style="color:#8b98a5;margin-top:8px;">This is a demo tracking page.</p>
+        </div>
+      </div>`;
+    }
+  }
+}
+
+// Auto login if session exists
+const lastEmail = localStorage.getItem('ot_last');
+if (lastEmail) {
+  const u = users.find(x => x.email === lastEmail);
+  if (u) { currentUser = u; enterApp(); }
+}
+</script>
+</body>
+</html>
